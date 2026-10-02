@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Deployment Portal</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #17202a;
+        }
+
+        .navbar {
+            height: 70px;
+            background: #111827;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+
+        .container {
+            width: 86%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .hero {
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #667085;
+            font-size: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .card h2 {
+            font-size: 19px;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .deploy-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .deploy-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .stage {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .stage:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 16px;
+            left: 62%;
+            width: 76%;
+            height: 2px;
+            background: #d1d5db;
+        }
+
+        .stage-icon {
+            width: 34px;
+            height: 34px;
+            margin: auto;
+            border-radius: 50%;
+            background: #22c55e;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stage-name {
+            display: block;
+            margin-top: 9px;
+            font-size: 12px;
+            color: #667085;
+        }
+
+        .deployment-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 9px;
+        }
+
+        .info-label {
+            color: #667085;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .success {
+            color: #16a34a;
+        }
+
+        .history {
+            margin-top: 24px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #edf0f2;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .version {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .time {
+            color: #98a2b3;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .badge {
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            color: #98a2b3;
+            font-size: 13px;
+            margin-top: 35px;
+        }
+
+        @media (max-width: 850px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            .navbar {
+                padding: 0 4%;
+            }
+
+            .pipeline {
+                gap: 5px;
+            }
+
+            .stage:not(:last-child)::after {
+                width: 65%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            DevOps<span>Deploy</span>
+        </div>
+
+        <div class="nav-status">
+            <div class="status-dot"></div>
+            System Ready
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <section class="hero">
+            <h1>Deployment Portal</h1>
+            <p>
+                Build, test and deploy applications through an automated CI/CD pipeline.
+            </p>
+        </section>
+
+        <div class="grid">
+
+            <!-- Deployment Configuration -->
+            <div class="card">
+                <h2>New Deployment</h2>
+
+                <div class="form-group">
+                    <label for="application">Application</label>
+                    <select id="application">
+                        <option>E-Commerce Web Application</option>
+                        <option>Python REST API</option>
+                        <option>Node.js Service</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="version">Version</label>
+                    <input
+                        type="text"
+                        id="version"
+                        value="v1.0.0"
+                        placeholder="Enter version"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="environment">Environment</label>
+                    <select id="environment">
+                        <option>Development</option>
+                        <option>Staging</option>
+                        <option>Production</option>
+                    </select>
+                </div>
+
+                <button class="deploy-btn" onclick="startDeployment()">
+                    Deploy Application
+                </button>
+            </div>
+
+
+            <!-- Current Deployment -->
+            <div class="card">
+                <h2>Current Deployment</h2>
+
+                <div class="deployment-info">
+
+                    <div class="info-box">
+                        <div class="info-label">Application</div>
+                        <div class="info-value">E-Commerce Web App</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Version</div>
+                        <div class="info-value">v1.0.0</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Environment</div>
+                        <div class="info-value">Production</div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-label">Status</div>
+                        <div class="info-value success" id="status">
+                            ✓ Deployed
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- CI/CD Pipeline -->
+        <div class="card" style="margin-top: 24px;">
+            <h2>CI/CD Pipeline</h2>
+
+            <div class="pipeline">
+
+                <div class="stage">
+                    <div class="stage-icon">✓</div>
+                    <span class="stage-name">Git Push</span>
+                </div>
+
+                <div class="stage">
+                    <div class="stage-icon">✓</div>
+                    <span class="stage-name">Build</span>
+                </div>
+
+                <div class="stage">
+                    <div class="stage-icon">✓</div>
+                    <span class="stage-name">Test</span>
+                </div>
+
+                <div class="stage">
+                    <div class="stage-icon">✓</div>
+                    <span class="stage-name">Docker</span>
+                </div>
+
+                <div class="stage">
+                    <div class="stage-icon">✓</div>
+                    <span class="stage-name">Deploy</span>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Deployment History -->
+        <div class="card history">
+            <h2>Deployment History</h2>
+
+            <div class="history-item">
+                <div>
+                    <div class="version">v1.0.0</div>
+                    <div class="time">Today · Production</div>
+                </div>
+                <div class="badge">Successful</div>
+            </div>
+
+            <div class="history-item">
+                <div>
+                    <div class="version">v0.9.5</div>
+                    <div class="time">Yesterday · Staging</div>
+                </div>
+                <div class="badge">Successful</div>
+            </div>
+
+            <div class="history-item">
+                <div>
+                    <div class="version">v0.9.4</div>
+                    <div class="time">2 days ago · Development</div>
+                </div>
+                <div class="badge">Successful</div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            DevOps Deployment Portal · Automated with Jenkins & Docker
+        </div>
+
+    </main>
+
+
+    <script>
+        function startDeployment() {
+            const status = document.getElementById("status");
+            const button = document.querySelector(".deploy-btn");
+
+            button.innerText = "Deployment Started...";
+            button.disabled = true;
+
+            status.innerText = "⏳ Deploying...";
+
+            setTimeout(() => {
+                status.innerText = "✓ Deployed";
+                button.innerText = "Deploy Application";
+                button.disabled = false;
+            }, 2500);
+        }
+    </script>
+
+</body>
+</html>
